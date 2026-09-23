@@ -17,10 +17,12 @@ const DEFAULT=[
 {name:"Reddit",icon:"R",url:"https://www.reddit.com/search/?q={query}",mode:"link",category:"social"}
 ];
 const $=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function readJSON(key,fallback){try{const v=localStorage.getItem(key);return v===null?fallback:JSON.parse(v)}catch{return fallback}}\nconst old=readJSON(KEY,readJSON("search-dock-v4",readJSON("search-dock-v3",null)));
+function readJSON(key,fallback){try{const v=localStorage.getItem(key);return v===null?fallback:JSON.parse(v)}catch{return fallback}}
+const old=readJSON(KEY,readJSON("search-dock-v4",readJSON("search-dock-v3",null)));
 let sites=old||DEFAULT.map(x=>({...x,enabled:true}));
 DEFAULT.forEach(d=>{const existing=sites.find(s=>s.name===d.name);if(!existing)sites.push({...d,enabled:true});else{existing.category=existing.category||d.category;existing.mode=existing.mode||d.mode}});
-const VALID_TYPES=["all","movie","series","youtube","book","game","music","person","social","web"];\nlet selectedType=VALID_TYPES.includes(localStorage.getItem("search-dock-type"))?localStorage.getItem("search-dock-type"):"all",last=[];
+const VALID_TYPES=["all","movie","series","youtube","book","game","music","person","social","web"];
+let selectedType=VALID_TYPES.includes(localStorage.getItem("search-dock-type"))?localStorage.getItem("search-dock-type"):"all",last=[];
 const TYPE_DEFAULTS={movie:["IMDb Movies","Apple Movies","TMDB"],series:["IMDb Series","TVMaze"],youtube:["YouTube"],book:["Open Library"],game:["Steam"],music:["iTunes Music"],person:["Wikipedia"],social:["Facebook","Instagram","Reddit"],web:["Google","Stack Overflow","Hacker News"]};
 let selectedByType=readJSON(SELECT_KEY,{}); if(!selectedByType||typeof selectedByType!=="object"||Array.isArray(selectedByType))selectedByType={};
 function selectedNames(type){if(type==="all")return null;if(!Array.isArray(selectedByType[type]))selectedByType[type]=TYPE_DEFAULTS[type]||[];return selectedByType[type]}
